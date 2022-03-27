@@ -1,4 +1,8 @@
 import * as React from 'react';
+import { SelectField } from '~/components/select-field';
+import { TextField } from '~/components/text-field';
+import { TextareaField } from '~/components/textarea-field';
+import { useOffline } from '~/lib/use-offline';
 import { addExpense } from '../api';
 
 export const ExpenseForm = () => {
@@ -6,6 +10,21 @@ export const ExpenseForm = () => {
   const [amount, setAmount] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [remarks, setRemarks] = React.useState('');
+
+  const amountInputRef = React.useRef<HTMLInputElement>(null);
+
+  const isOffline = useOffline();
+
+  const reset = () => {
+    setDate(getToday());
+    setAmount('');
+    setCategory('');
+    setRemarks('');
+
+    if (amountInputRef.current) {
+      amountInputRef.current.focus();
+    }
+  };
 
   return (
     <form
@@ -16,62 +35,65 @@ export const ExpenseForm = () => {
           Amount: Number(amount),
           Category: category,
           Remarks: remarks,
-        }).then(() => {
-          setDate(getToday());
-          setAmount('');
-          setCategory('');
-          setRemarks('');
-        });
+        })
+          .then(reset)
+          .catch((err) => {
+            if (isOffline) {
+              reset();
+            } else {
+              console.error(err);
+              alert(String(err));
+            }
+          });
       }}
+      className="max-w-md mx-auto p-6 space-y-6"
     >
+      <TextField
+        label="Date"
+        value={date}
+        onChangeValue={setDate}
+        type="date"
+        id="date"
+        required
+      />
+      <TextField
+        label="Amount"
+        value={amount}
+        onChangeValue={setAmount}
+        type="number"
+        id="amount"
+        required
+        autoFocus
+        ref={amountInputRef}
+      />
+      <SelectField
+        label="Category"
+        value={category}
+        onChangeValue={setCategory}
+        id="category"
+        required
+      >
+        <option value="">Select</option>
+        <option value="Food">Food</option>
+        <option value="Transportation">Transportation</option>
+        <option value="Learning">Learning</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Family">Family</option>
+        <option value="Love">Love</option>
+      </SelectField>
+      <TextareaField
+        label="Remarks"
+        value={remarks}
+        onChangeValue={setRemarks}
+        id="remarks"
+      />
       <div>
-        <label htmlFor="date">Date</label>
-        <input
-          type="date"
-          id="date"
-          value={date}
-          onChange={(ev) => setDate(ev.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="amount">Amount</label>
-        <input
-          type="number"
-          id="amount"
-          value={amount}
-          onChange={(ev) => setAmount(ev.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="category">Category</label>
-        <select
-          id="category"
-          value={category}
-          onChange={(ev) => setCategory(ev.target.value)}
-          required
+        <button
+          type="submit"
+          className="w-full items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
         >
-          <option value="">Select</option>
-          <option value="Food">Food</option>
-          <option value="Transportation">Transportation</option>
-          <option value="Learning">Learning</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Family">Family</option>
-          <option value="Love">Love</option>
-        </select>
-      </div>
-      <div>
-        <label htmlFor="remarks">Remarks</label>
-        <textarea
-          id="remarks"
-          value={remarks}
-          onChange={(ev) => setRemarks(ev.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <button type="submit">ADD</button>
+          ADD
+        </button>
       </div>
     </form>
   );

@@ -17,7 +17,7 @@ const bgSyncPlugin = new BackgroundSyncPlugin('expenseQueue', {
 });
 
 registerRoute(
-  /\/\.netlify\/functions\/*/,
+  /\/\.netlify\/functions\/.*/,
   new NetworkOnly({
     plugins: [bgSyncPlugin],
   }),

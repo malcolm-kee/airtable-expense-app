@@ -1,13 +1,13 @@
-import './App.css';
+import { OfflineContextProvider } from '~/lib/use-offline';
 import { ExpenseForm } from './modules/expense';
 import { UpdatePrompt } from './modules/pwa';
 
 function App() {
   return (
-    <div className="App">
+    <OfflineContextProvider>
       <ExpenseForm />
       <UpdatePrompt />
-    </div>
+    </OfflineContextProvider>
   );
 }
 
