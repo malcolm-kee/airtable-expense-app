@@ -8,7 +8,7 @@ import { addExpense } from '../api';
 export const ExpenseForm = () => {
   const [date, setDate] = React.useState(getToday);
   const [amount, setAmount] = React.useState('');
-  const [category, setCategory] = React.useState('');
+  const [category, setCategory] = React.useState('Food');
   const [remarks, setRemarks] = React.useState('');
 
   const amountInputRef = React.useRef<HTMLInputElement>(null);
@@ -18,7 +18,7 @@ export const ExpenseForm = () => {
   const reset = () => {
     setDate(getToday());
     setAmount('');
-    setCategory('');
+    setCategory('Food');
     setRemarks('');
 
     if (amountInputRef.current) {
@@ -73,13 +73,14 @@ export const ExpenseForm = () => {
         id="category"
         required
       >
-        <option value="">Select</option>
         <option value="Food">Food</option>
-        <option value="Transportation">Transportation</option>
-        <option value="Learning">Learning</option>
         <option value="Entertainment">Entertainment</option>
-        <option value="Family">Family</option>
+        <option value="Transportation">Transportation</option>
+        <option value="Accommodation">Accommodation</option>
+        <option value="Learning">Learning</option>
         <option value="Love">Love</option>
+        <option value="Family">Family</option>
+        <option value="Health">Health</option>
       </SelectField>
       <TextareaField
         label="Remarks"
