@@ -81,6 +81,7 @@ export const ExpenseForm = () => {
         <option value="Love">Love</option>
         <option value="Family">Family</option>
         <option value="Health">Health</option>
+        <option value="Pet">Pet</option>
       </SelectField>
       <TextareaField
         label="Remarks"
