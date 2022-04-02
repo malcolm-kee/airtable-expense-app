@@ -19,7 +19,8 @@ export const SelectField = React.forwardRef<
         onChange={onChangeValue && ((ev) => onChangeValue(ev.target.value))}
         {...props}
         className={cx(
-          'block min-w-0 w-full sm:text-sm border-gray-300 rounded-md shadow-sm focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50',
+          'block min-w-0 w-full sm:text-sm border-gray-300 rounded-md shadow-sm focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50 transition-colors',
+          props.disabled && 'bg-gray-200',
           props.className
         )}
         ref={forwardeRef}

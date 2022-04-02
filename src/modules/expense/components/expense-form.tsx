@@ -3,6 +3,7 @@ import { SelectField } from '~/components/select-field';
 import { TextField } from '~/components/text-field';
 import { TextareaField } from '~/components/textarea-field';
 import { useOffline } from '~/lib/use-offline';
+import { cx } from '~/lib/cx';
 import { addExpense } from '../api';
 
 export const ExpenseForm = () => {
@@ -10,6 +11,7 @@ export const ExpenseForm = () => {
   const [amount, setAmount] = React.useState('');
   const [category, setCategory] = React.useState('Food');
   const [remarks, setRemarks] = React.useState('');
+  const [status, setStatus] = React.useState<'idle' | 'busy'>('idle');
 
   const amountInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -20,6 +22,7 @@ export const ExpenseForm = () => {
     setAmount('');
     setCategory('Food');
     setRemarks('');
+    setStatus('idle');
 
     if (amountInputRef.current) {
       amountInputRef.current.focus();
@@ -30,6 +33,7 @@ export const ExpenseForm = () => {
     <form
       onSubmit={(ev) => {
         ev.preventDefault();
+        setStatus('busy');
         addExpense({
           Date: date,
           Amount: Number(amount),
@@ -55,6 +59,7 @@ export const ExpenseForm = () => {
         type="date"
         id="date"
         required
+        disabled={status === 'busy'}
       />
       <TextField
         label="Amount"
@@ -65,6 +70,7 @@ export const ExpenseForm = () => {
         required
         autoFocus
         ref={amountInputRef}
+        disabled={status === 'busy'}
       />
       <SelectField
         label="Category"
@@ -72,6 +78,7 @@ export const ExpenseForm = () => {
         onChangeValue={setCategory}
         id="category"
         required
+        disabled={status === 'busy'}
       >
         <option value="Food">Food</option>
         <option value="Entertainment">Entertainment</option>
@@ -88,13 +95,18 @@ export const ExpenseForm = () => {
         value={remarks}
         onChangeValue={setRemarks}
         id="remarks"
+        disabled={status === 'busy'}
       />
       <div>
         <button
           type="submit"
-          className="w-full items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+          className={cx(
+            'w-full items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500',
+            status === 'busy' ? 'bg-pink-400' : 'bg-pink-600 hover:bg-pink-700'
+          )}
+          disabled={status === 'busy'}
         >
-          ADD
+          {status === 'busy' ? 'ADDING...' : 'ADD'}
         </button>
       </div>
     </form>
