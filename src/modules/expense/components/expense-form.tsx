@@ -2,6 +2,7 @@ import * as React from 'react';
 import { SelectField } from '~/components/select-field';
 import { TextField } from '~/components/text-field';
 import { TextareaField } from '~/components/textarea-field';
+import { CheckboxField } from '~/components/checkbox-field';
 import { useOffline } from '~/lib/use-offline';
 import { cx } from '~/lib/cx';
 import { addExpense } from '../api';
@@ -12,6 +13,7 @@ export const ExpenseForm = () => {
   const [category, setCategory] = React.useState('Food');
   const [remarks, setRemarks] = React.useState('');
   const [status, setStatus] = React.useState<'idle' | 'busy'>('idle');
+  const [recurring, setRecurring] = React.useState(false);
 
   const amountInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -36,9 +38,10 @@ export const ExpenseForm = () => {
         setStatus('busy');
         addExpense({
           Date: date,
-          Amount: Number(amount),
+          AUD: Number(amount),
           Category: category,
           Remarks: remarks,
+          Recurring: recurring,
         })
           .then(reset)
           .catch((err) => {
@@ -81,15 +84,20 @@ export const ExpenseForm = () => {
         disabled={status === 'busy'}
       >
         <option value="Food">Food</option>
-        <option value="Entertainment">Entertainment</option>
-        <option value="Transportation">Transportation</option>
-        <option value="Accommodation">Accommodation</option>
-        <option value="Learning">Learning</option>
+        <option value="Accommodations">Accommodations</option>
+        <option value="Hygiene">Hygiene</option>
+        <option value="Social">Social</option>
         <option value="Love">Love</option>
-        <option value="Family">Family</option>
-        <option value="Health">Health</option>
-        <option value="Pet">Pet</option>
+        <option value="Transportation">Transportation</option>
+        <option value="Comms and Internet">Comms and Internet</option>
       </SelectField>
+      <CheckboxField
+        label="Recurring"
+        checked={recurring}
+        onChangeValue={setRecurring}
+        id="recurring"
+        name="recurring"
+      />
       <TextareaField
         label="Remarks"
         value={remarks}

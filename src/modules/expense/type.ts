@@ -1,6 +1,7 @@
 export interface Expense {
   Date: string;
-  Amount: number;
+  AUD: number;
   Category: string;
   Remarks: string;
+  Recurring: boolean;
 }

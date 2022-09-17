@@ -1,19 +1,30 @@
 import { Handler } from '@netlify/functions';
 import Airtable from 'airtable';
 
-const base = Airtable.base(process.env.AIRTABLE_BASE);
+const base = Airtable.base(process.env.AIRTABLE_BASE!);
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod === 'POST') {
-    await base('Expenses').create([
-      {
-        fields: JSON.parse(event.body),
-      },
-    ]);
+    const data = JSON.parse(event.body!);
 
-    return {
-      statusCode: 200,
-    };
+    try {
+      await base('Expenses').create([
+        {
+          fields: data,
+        },
+      ]);
+
+      return {
+        statusCode: 200,
+      };
+    } catch (err) {
+      console.error(err);
+
+      return {
+        statusCode: 500,
+        error: err,
+      };
+    }
   }
 
   return {

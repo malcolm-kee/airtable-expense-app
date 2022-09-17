@@ -3,33 +3,27 @@ import * as React from 'react';
 const OfflineContext = React.createContext(false);
 OfflineContext.displayName = 'OfflineContext';
 
+function subscribeOnlineStatus(callback: () => void) {
+  window.addEventListener('online', callback);
+  window.addEventListener('offline', callback);
+
+  return () => {
+    window.removeEventListener('online', callback);
+    window.removeEventListener('offline', callback);
+  };
+}
+
 export const OfflineContextProvider = (props: {
   children: React.ReactNode;
 }) => {
-  const [offline, setOffline] = React.useState(false);
-
-  React.useEffect(() => {
-    setOffline(!navigator.onLine);
-
-    function onOnline() {
-      setOffline(false);
-    }
-
-    function onOffline() {
-      setOffline(true);
-    }
-
-    window.addEventListener('online', onOnline);
-    window.addEventListener('offline', onOffline);
-
-    return () => {
-      window.removeEventListener('online', onOnline);
-      window.removeEventListener('offline', onOffline);
-    };
-  });
+  const isOnline = React.useSyncExternalStore(
+    subscribeOnlineStatus,
+    () => navigator.onLine,
+    () => true
+  );
 
   return (
-    <OfflineContext.Provider value={offline}>
+    <OfflineContext.Provider value={!isOnline}>
       {props.children}
     </OfflineContext.Provider>
   );
