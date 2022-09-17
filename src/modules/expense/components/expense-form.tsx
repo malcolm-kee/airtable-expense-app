@@ -74,6 +74,7 @@ export const ExpenseForm = () => {
         autoFocus
         ref={amountInputRef}
         disabled={status === 'busy'}
+        inputMode="decimal"
       />
       <SelectField
         label="Category"
