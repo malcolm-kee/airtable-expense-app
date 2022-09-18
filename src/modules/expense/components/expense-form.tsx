@@ -91,6 +91,7 @@ export const ExpenseForm = () => {
         <option value="Love">Love</option>
         <option value="Transportation">Transportation</option>
         <option value="Comms and Internet">Comms and Internet</option>
+        <option value="Learning">Learning</option>
       </SelectField>
       <CheckboxField
         label="Recurring"
